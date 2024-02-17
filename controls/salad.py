@@ -26,8 +26,8 @@ class Disease(Resource):
     @classmethod
     def delete(cls, did=None):
         try:
-            exist_disease = tbdiseases.find_by_did(did)
-            if exist_disease:
+            found_disease = tbdiseases.find_by_did(did)
+            if found_disease:
                 tbdiseases.delete_by_did(did)
                 return {"message": "Disease deleted successfully"}, 200
             else:
@@ -42,11 +42,12 @@ class Disease(Resource):
             disease = data["disease"]
             cause = data["cause"]
             treatment = data["treatment"]
-            exist_disease = tbdiseases.find_by_did(did) # check if disease exists in the database
+            found_disease = tbdiseases.find_by_did(did) # check if disease exists in the database
             schemar = diseaseschema(many=False)
-            _data = schemar.dump(exist_disease)
-            if exist_disease:
+            # _data = schemar.dump(found_disease)
+            if found_disease:
                 data = tbdiseases.update_by_did(did, disease, cause, treatment)
+                _data = schemar.dump(data)
                 return {
                     "message": "Disease updated successfully",
                     "data": _data
@@ -56,7 +57,7 @@ class Disease(Resource):
                 return {"message": f"Disease with id {did} was not found"}, 404
         except Exception as err:
             return {"error": str(err)}, 500
-
+   
 
 class DiseaseList(Resource):
     @classmethod
@@ -68,3 +69,17 @@ class DiseaseList(Resource):
             return {"disease": _data}
         except Exception as err:
             return {"msg": err}
+class AddNewDesease(Resource):
+    @classmethod
+    def post(cls):
+        try:
+            data = request.get_json()
+            disease = data["disease"]
+            cause = data["cause"]
+            treatment = data["treatment"]
+            new_disease = tbdiseases.insert(disease, cause, treatment)
+            schema = diseaseschema(many=False)
+            _data = schema.dump(new_disease)
+            return {"message": "Disease added successfully", "data": _data}, 201
+        except Exception as err:
+            return {"error": str(err)}, 500

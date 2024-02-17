@@ -1,6 +1,6 @@
 from dbinfo import app, api, db, render_template
 
-from controls.salad import HomePage,Disease,DiseaseList
+from controls.salad import HomePage,Disease,DiseaseList, AddNewDesease
 ######### webpage #########
 @app.errorhandler(404)
 def page_not_found(err):
@@ -8,6 +8,8 @@ def page_not_found(err):
 
 api.add_resource(HomePage, "/")
 api.add_resource(Disease, "/disease/<did>")
+api.add_resource(AddNewDesease,"/disease/addnew")
+
 
 api.add_resource(DiseaseList, "/diseaselist")
 

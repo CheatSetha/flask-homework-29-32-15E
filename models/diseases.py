@@ -17,6 +17,12 @@ class tbdiseases(db.Model):
     def find_by_did(cls, did) -> "tbdiseases":
         return cls.query.filter_by(did=did).first()
     
+    @classmethod
+    def insert(cls, disease, cause, treatment):
+        obj = cls(disease=disease, cause=cause, treatment=treatment)
+        db.session.add(obj)
+        db.session.commit()
+        return obj
 
     @classmethod
     def delete_by_did(cls, did):
